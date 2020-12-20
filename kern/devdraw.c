@@ -624,7 +624,7 @@ drawfreedscreen(DScreen *this)
 		dscreen = this->next;
 		goto Found;
 	}
-	while(next = ds->next){	/* assign = */
+	while((next = ds->next)){	/* assign = */
 		if(next == this){
 			ds->next = this->next;
 			goto Found;
@@ -697,7 +697,7 @@ drawuninstallscreen(Client *client, CScreen *this)
 		free(this);
 		return;
 	}
-	while(next = cs->next){	/* assign = */
+	while((next = cs->next)){	/* assign = */
 		if(next == this){
 			cs->next = this->next;
 			drawfreedscreen(this->dscreen);
@@ -721,7 +721,7 @@ drawuninstall(Client *client, int id)
 		drawfreedimage(d);
 		return;
 	}
-	while(next = d->next){	/* assign = */
+	while((next = d->next)){	/* assign = */
 		if(next->id == id){
 			d->next = next->next;
 			drawfreedimage(next);
@@ -1097,7 +1097,7 @@ drawclose(Chan *c)
 	if(QID(c->qid) == Qctl)
 		cl->busy = 0;
 	if((c->flag&COPEN) && (decref(&cl->r)==0)){
-		while(r = cl->refresh){	/* assign = */
+		while((r = cl->refresh)){	/* assign = */
 			cl->refresh = r->next;
 			free(r);
 		}
@@ -1343,10 +1343,10 @@ drawcoord(uchar *p, uchar *maxp, int oldx, int *newx)
 		x |= *p++ << 7;
 		x |= *p++ << 15;
 		if(x & (1<<22))
-			x |= ~0<<23;
+			x |= ~0U<<23;
 	}else{
 		if(b & 0x40)
-			x |= ~0<<7;
+			x |= ~0U<<7;
 		x += oldx;
 	}
 	*newx = x;
@@ -1358,10 +1358,9 @@ printmesg(char *fmt, uchar *a, int plsprnt)
 {
 	char buf[256];
 	char *p, *q;
-	int s;
+	int dbg = 0;
 
-	if(1|| plsprnt==0){
-		USED(s);
+	if(!dbg || plsprnt==0){
 		return;
 	}
 	q = buf;
@@ -1427,7 +1426,6 @@ drawmesg(Client *client, void *av, int n)
 	fmt = nil;
 	if(waserror()){
 		if(fmt) printmesg(fmt, a, 1);
-	/*	iprint("error: %s\n", up->errstr);	*/
 		nexterror();
 	}
 	while((n-=m) > 0){
@@ -2055,7 +2053,6 @@ drawmesg(Client *client, void *av, int n)
 		case 'y':
 		case 'Y':
 			printmesg(fmt="LR", a, 0);
-		//	iprint("load %c\n", *a);
 			m = 1+4+4*4;
 			if(n < m)
 				error(Eshortdraw);
