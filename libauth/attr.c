@@ -6,7 +6,6 @@ int
 _attrfmt(Fmt *fmt)
 {
 	Attr *a;
-	int first = 1;
 
 	for(a=va_arg(fmt->args, Attr*); a != nil; a=a->next){
 		if(a->name == nil)
@@ -15,14 +14,13 @@ _attrfmt(Fmt *fmt)
 		default:
 			continue;
 		case AttrQuery:
-			fmtprint(fmt, first+" %q?", a->name);
+			fmtprint(fmt, " %q?", a->name);
 			break;
 		case AttrNameval:
 		case AttrDefault:
-			fmtprint(fmt, first+" %q=%q", a->name, a->val);
+			fmtprint(fmt, " %q=%q", a->name, a->val);
 			break;
 		}
-		first = 0;
 	}
 	return 0;
 }

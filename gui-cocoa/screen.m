@@ -219,7 +219,7 @@ mainproc(void *aux)
 - (void) otherMouseDown:(NSEvent*)event;
 - (void) otherMouseDragged:(NSEvent*)event;
 - (void) otherMouseUp:(NSEvent*)event;
-- (void) scrollWheel:(NSEvent*)event;                                                                                                                                                                                                                                                                                                                                                                                                   
+- (void) scrollWheel:(NSEvent*)event;
 - (BOOL) acceptsFirstResponder;
 - (void) reshape;
 - (BOOL) acceptsMouseMovedEvents;
@@ -423,6 +423,7 @@ evkey(NSEvent *event)
 }
 
 - (void) reshape {
+	[super reshape];
 	winsize = self.frame.size;
 	NSOpenGLContext *ctxt = [NSOpenGLContext currentContext];
 	[[myview openGLContext] makeCurrentContext];
