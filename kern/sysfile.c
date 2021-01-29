@@ -354,7 +354,7 @@ unionread(Chan *c, void *va, long n)
 				c->umc = cclone(mount->to);
 				c->umc = devtab[c->umc->type]->open(c->umc, OREAD);
 			}
-	
+
 			nr = devtab[c->umc->type]->read(c->umc, va, n, c->umc->offset);
 			c->umc->offset += nr;
 			poperror();
@@ -1258,4 +1258,10 @@ sysrendezvous(void *tag, void *val)
 	n = _sysrendezvous(tag, val);
 	enderror();
 	return n;
+}
+
+int
+sysgetpid(void)
+{
+	return up->pid;
 }
