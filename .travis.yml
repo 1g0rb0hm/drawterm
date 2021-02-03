@@ -1,0 +1,31 @@
+env:
+  global:
+   # The next declaration is the encrypted COVERITY_SCAN_TOKEN, created
+   #   via the "travis encrypt" command using the project repo's public key
+   - secure: cXzqAzlUzMFKaiU8rsPazBlWCcHlkQKxSR8MnCCH5cr43McqnNEM7n1NoGfMLj0fKWmEEz1Q2L+3fTrvMlIps/8LFTc4PvsiurlHFtLqJ6QlCf8vZp3Qmn6UJ+AhUUjO84SSylSe11oFx+fgnr80wzzPIargt/V7Ak/UA/4hSWGKnYnnFCN3eFDOFBG+y/F+FvOEr+TyCpameP67wqa7iDHZe4MOJG8cq51S3RXJnEsAcwiP3MnqykhaeAJbrnbabQ78344SBpvANgKX6m7zJ9xntiwfDZo+5a7TDT6Y6vFOIysUG7YU0etgi8nQMdvMtoZR4PwL094a1T8tO7KCBvfa3qb3SB6DIsDzie3UmlVuJul2ke25owXBq2bkriFYb+l5CBk0xIbrE8VmuLAokONeueXOw+liOtXtkZIOPwnwJok2aqIQ+77UyX8K4VQO2R+iTVPXF858HZ5VWZZoeYbSsTsNFh8OyeVO8yjqQX6pwgpQv0gpUTCab0ExU0nfRDQ/88C3aH8YQDMw+4NED+DyNB4hO1Kc1X802R04S646anJb7f6vEnb2UDknKDuc1elrwMaA0hthfv3vS4hiH1zWnIvx+QJ2SUf2WeCMRdkmplYiWyX2/9T0kmxozSW2tHNVmBY5jwv17GIuycjlRqov1ZBkOUk6jDZfKRiDce0=
+
+language: c
+
+matrix:
+  include:
+    - os: osx
+      osx_image: xcode10.2
+      env:
+      - CONF=osx-cocoa
+    - os: linux
+      env:
+      - CONF=unix
+      addons:
+        coverity_scan:
+          project:
+            name: "1g0rb0hm/drawterm"
+            description: "Build submitted via Travis CI"
+          notification_email: boehm.igor@gmail.com
+          build_command: "CONF=unix make"
+          branch_pattern: devel
+
+before_script:
+  - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then echo -n | openssl s_client -connect scan.coverity.com:443 | sed -ne '/-BEGIN CERTIFICATE-/,/-END CERTIFICATE-/p' | sudo tee -a /etc/ssl/certs/ca-; fi
+
+script:
+  - make
