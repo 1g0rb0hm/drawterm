@@ -21,7 +21,7 @@ matrix:
             name: "1g0rb0hm/drawterm"
             description: "Build submitted via Travis CI"
           notification_email: boehm.igor@gmail.com
-          build_command: "CONF=unix make"
+          build_command: "make"
           branch_pattern: devel
 
 before_script:
