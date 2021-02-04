@@ -1476,7 +1476,7 @@ readbyte(Param *p, uchar *buf, int y)
 {
 	Buffer b;
 	Memimage *img;
-	int dx, isgrey, convgrey, alphaonly, copyalpha, i, nb;
+	int dx, isgrey, convgrey, alphaonly, copyalpha, i, j, nb;
 	uchar *begin, *end, *r, *w, *rrepl, *grepl, *brepl, *arepl, *krepl;
 	uchar ured, ugrn, ublu;
 	ulong u;
@@ -1526,7 +1526,8 @@ readbyte(Param *p, uchar *buf, int y)
 	krepl = replbit[img->nbits[CGrey]];
 
 	for(i=0; i<dx; i++){
-		u = r[0] | (r[1]<<8) | (r[2]<<16) | (r[3]<<24);
+		for(j = 0, u = 0 ; j < 4 && r+j < end ; j++)
+			u |= r[j] << (8*j);
 		if(copyalpha) {
 			*w++ = arepl[(u>>img->shift[CAlpha]) & img->mask[CAlpha]];
 		}
@@ -2136,8 +2137,8 @@ memoptdraw(Memdrawparam *par)
 						*dp ^= (v ^ *dp) & lm;
 						dp++;
 					}
-					memset(dp, v, dx);
-					dp += dx;
+					memset(dp, v, dx-1);
+					dp += dx-1;
 					*dp ^= (v ^ *dp) & rm;
 				}
 			}
