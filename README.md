@@ -10,6 +10,10 @@
 
 My Drawterm Laboratory where I am doing stuff that might cause mockery and other insults.
 
+<p align="center">
+  <img src="screenshot.png" alt="Screenshot">
+</p>
+
 ## Description
 
 This is a fork of [http://drawterm.9front.org/](http://drawterm.9front.org/) with a focus to improve support on macOS.
