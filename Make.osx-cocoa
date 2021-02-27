@@ -4,15 +4,17 @@ AR=ar
 AS=as
 RANLIB=ranlib
 CC=clang
-ANALYZE=--analyze -Xanalyzer -analyzer-output=html -o html-dir
-CFLAGS=-Wall -Wno-gnu-designator -Wno-missing-braces -g -I$(ROOT) -I$(ROOT)/include -I$(ROOT)/kern -c -D_THREAD_SAFE $(PTHREAD) -O2
+#ANALYZE=--analyze -Xanalyzer -analyzer-output=html -o html-dir
+#CDEBUG=-fno-omit-frame-pointer -fsanitize=address -O0
+CFLAGS=-Wall -Wno-gnu-designator -Wno-missing-braces -g  -I$(ROOT) -I$(ROOT)/include -I$(ROOT)/kern -c -D_THREAD_SAFE $(PTHREAD) -O2 $(CDEBUG) $(ANALYZE)
 O=o
 OS=posix
 GUI=cocoa
-LDADD=-g -framework AppKit -framework OpenGL
+#LDDEBUG=-fsanitize=address
+LDADD=-g -framework AppKit -framework OpenGL -framework CoreServices -framework CoreAudio -lportaudio $(LDDEBUG)
 LDFLAGS=$(PTHREAD)
 TARG=drawterm
-AUDIO=none
+AUDIO=macosx
 
 all: default
 
