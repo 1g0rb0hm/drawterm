@@ -1,0 +1,21 @@
+# Mac OS X
+PTHREAD=	# for Mac
+AR=ar
+AS=as
+RANLIB=ranlib
+#CC=xcrun --sdk macosx clang
+CC=clang
+CFLAGS=-Wall -Wno-gnu-designator  -Wno-missing-braces -g -I$(ROOT) -I$(ROOT)/include -I$(ROOT)/kern -c -D_THREAD_SAFE $(PTHREAD) -march=native -O2 $(DEBUGCFLAGS)
+O=o
+OS=posix
+GUI=metal
+LDADD=-g -framework Cocoa -framework Metal -framework QuartzCore -framework CoreServices -framework CoreAudio -lportaudio
+LDFLAGS=$(PTHREAD)
+TARG=drawterm
+AUDIO=macosx
+
+all: default
+
+libmachdep.a:
+	arch=`uname -m|sed 's/i.86/386/;s/x86_64/amd64/'`; \
+	(cd posix-$$arch && $(MAKE))
