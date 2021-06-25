@@ -34,7 +34,7 @@ $ brew install portaudio
 Build:
 
 ```
-$ CONF=osx-cocoa make -j4
+$ CONF=osx-metal make -j4
 $ cp drawterm gui-cocoa/drawterm.app/
 ```
 
