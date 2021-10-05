@@ -253,7 +253,7 @@ extern	int	fmtprint(Fmt*, char*, ...);
 extern	int	fmtvprint(Fmt*, char*, va_list);
 extern	void*	mallocz(ulong, int);
 
-extern	uintptr	getcallerpc(void*);
+extern	uintptr	getcallerpc(void*) __attribute__((no_sanitize("address")));
 extern	char*	cleanname(char*);
 extern	void	sysfatal(char*, ...);
 extern	char*	strecpy(char*, char*, char*);

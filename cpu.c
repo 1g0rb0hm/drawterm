@@ -21,7 +21,7 @@ static AuthInfo *p9any(int);
 static int	getkey(Authkey*, char*, char*, char*, char*);
 static int	findkey(Authkey*, char*, char*, char*);
 
-static char	*host;
+char	*host;
 static int	aanfilter;
 static int	aanto = 3600 * 24;
 static int	norcpu;

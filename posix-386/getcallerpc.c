@@ -2,7 +2,7 @@
 #include "libc.h"
 
 uintptr
-getcallerpc(void *a)
+getcallerpc(void *a) __attribute__((no_sanitize("address")))
 {
 	return ((uintptr*)a)[-1];
 }

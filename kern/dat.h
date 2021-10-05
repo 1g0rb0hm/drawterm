@@ -402,6 +402,7 @@ enum
 extern	int	cpuserver;
 extern	Dev*	devtab[];
 extern  char	*eve;
+extern  char    *host;
 extern	char	hostdomain[];
 extern  Queue*	kbdq;
 extern  Queue*	kprintoq;

@@ -19,7 +19,7 @@ _memltofront(Memimage *i, Memimage *front, int fill)
 
 	l = i->layer;
 	s = l->screen;
-	while(l->front != front){
+	while(l->front != nil && l->front != front){
 		f = l->front;
 		x = l->screenr;
 		overlap = rectclip(&x, f->layer->screenr);

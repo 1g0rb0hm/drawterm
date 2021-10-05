@@ -120,6 +120,7 @@ icossin(int deg, int *cosp, int *sinp)
 		deg -= 180;
 		/* fall through */
 	case 0:
+		assert(deg >= 0 && deg <= 90);
 		stp = &sinus[deg];
 		ctp = &sinus[90-deg];
 		break;
@@ -131,6 +132,7 @@ icossin(int deg, int *cosp, int *sinp)
 	case 1:
 		deg = 180-deg;
 		cossign = -cossign;
+		assert(deg >= 0 && deg <= 90);
 		stp = &sinus[deg];
 		ctp = &sinus[90-deg];
 		break;

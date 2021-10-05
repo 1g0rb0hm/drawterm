@@ -16,34 +16,31 @@
 #include <memdraw.h>
 #include "screen.h"
 #include "keyboard.h"
-#include "ball9png.h"
+#include "glendapng.h"
 
-#ifndef DEBUG
-#define DEBUG 0
-#endif
-#define LOG(fmt, ...) if(DEBUG)NSLog((@"%s:%d %s " fmt), __FILE__, __LINE__, __PRETTY_FUNCTION__, ##__VA_ARGS__)
+#define LOG(fmt, ...) if(0)NSLog((@"%s:%d %s " fmt), __FILE__, __LINE__, __PRETTY_FUNCTION__, ##__VA_ARGS__)
 
-Memimage *gscreen;
-
-@interface DrawLayer : CAMetalLayer
-@property id<MTLTexture> texture;
+@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
 @end
 
 @interface DrawtermView : NSView<NSTextInputClient>
+@property (nonatomic, retain) NSCursor *currentCursor;
 - (void)reshape;
 - (void)clearMods;
 - (void)clearInput;
 - (void)mouseevent:(NSEvent *)e;
 - (void)resetLastInputRect;
 - (void)enlargeLastInputRect:(NSRect)r;
+- (void)setlabel:(char*)label;
 @end
 
-@interface AppDelegate : NSObject <NSApplicationDelegate, NSWindowDelegate>
+@interface DrawLayer : CAMetalLayer
+@property id<MTLTexture> texture;
 @end
 
+Memimage *gscreen;
 static AppDelegate *myApp;
 static DrawtermView *myview;
-static NSCursor *currentCursor;
 
 static ulong pal[256];
 
@@ -270,7 +267,7 @@ setcursor(void)
 	NSImage *img = [[NSImage alloc] initWithSize:NSMakeSize(16, 16)];
 	[img addRepresentation:rep2];
 	[img addRepresentation:rep];
-	currentCursor = [[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint(-cursor.offset.x, -cursor.offset.y)];
+	myview.currentCursor = [[NSCursor alloc] initWithImage:img hotSpot:NSMakePoint(-cursor.offset.x, -cursor.offset.y)];
 }
 	unlock(&cursor.lk);
 
@@ -326,7 +323,7 @@ mainproc(void *aux)
 	[m setSubmenu:sm forItem:[m itemWithTitle:@"DEVDRAW"]];
 	[NSApp setMainMenu:m];
 
-	NSData *d = [[NSData alloc] initWithBytes:ball9_png length:(sizeof ball9_png)];
+	NSData *d = [[NSData alloc] initWithBytes:glenda_png length:(sizeof glenda_png)];
 	NSImage *i = [[NSImage alloc] initWithData:d];
 	[NSApp setApplicationIconImage:i];
 	[[NSApp dockTile] display];
@@ -358,6 +355,9 @@ mainproc(void *aux)
 
 	[NSEvent setMouseCoalescingEnabled:NO];
 	setcursor();
+
+    char* label = "drawterm";
+	[myview setlabel:label];
 
 	[_window makeKeyAndOrderFront:self];
 	[NSApp activateIgnoringOtherApps:YES];
@@ -695,10 +695,22 @@ evkey(uint v)
 	return TRUE;
 }
 
+- (void) setlabel:(char*)label {
+	LOG(@"setlabel(%s)", label);
+	if(label == nil)
+		return;
+
+	@autoreleasepool{
+		NSString *s = [[NSString alloc] initWithUTF8String:label];
+		[[NSApp dockTile] setBadgeLabel:s];
+	}
+}
+
 - (void) resetCursorRects
 {
 	[super resetCursorRects];
-	[self addCursorRect:self.bounds cursor:currentCursor];
+	if (self.currentCursor != nil)
+		[self addCursorRect:self.bounds cursor:self.currentCursor];
 }
 
 - (void) reshape
@@ -708,6 +720,8 @@ evkey(uint v)
 	if(gscreen != nil){
 		screenresize(Rect(0, 0, s.width, s.height));
 	}
+	[myview setlabel:host];
+
 }
 
 - (void)windowDidResize:(NSNotification *)notification

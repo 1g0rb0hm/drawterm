@@ -15,7 +15,7 @@ _memltorear(Memimage *i, Memimage *rear)
 
 	l = i->layer;
 	s = l->screen;
-	while(l->rear != rear){
+	while(l->rear != nil && l->rear != rear){
 		r = l->rear;
 		x = l->screenr;
 		overlap = rectclip(&x, r->layer->screenr);

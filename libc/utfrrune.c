@@ -17,8 +17,6 @@ utfrrune(char *s, long c)
 		if(c1 < Runeself) {	/* one byte rune */
 			if(c1 == 0)
 				return s1;
-			if(c1 == c)
-				s1 = s;
 			s++;
 			continue;
 		}

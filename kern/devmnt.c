@@ -729,7 +729,7 @@ mountio(Mnt *m, Mntrpc *r)
 			switch(r->request.type){
 			case Tremove:
 			case Tclunk:
-				/* botch, abandon fid */ 
+				/* botch, abandon fid */
 				if(strcmp(up->errstr, Ehungup) != 0)
 					r->c->fid = 0;
 			}
@@ -1075,7 +1075,7 @@ mntchk(Chan *c)
 
 	m = c->mchan->mux;
 	if(m == nil)
-		print("mntchk 2: nil mux c %s c->mchan %s \n", chanpath(c), chanpath(c->mchan));
+		panic("mntchk 2: nil mux c %s c->mchan %s \n", chanpath(c), chanpath(c->mchan));
 
 	/*
 	 * Was it closed and reused (was error(Eshutdown); now, it cannot happen)

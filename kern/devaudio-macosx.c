@@ -13,7 +13,7 @@
 #include	"devaudio.h"
 #include    "portaudio.h"
 
-#define	THRESHOLD	0.005	
+#define	THRESHOLD	0.005
 #define NUM_CHANNELS  (2)
 #define SAMPLE_RATE   (44100)
 #define FRAMES_PER_BUFFER  (2048)
@@ -74,7 +74,7 @@ audiodevopen(void)
 {
     err = Pa_Initialize();
 
-    if (err != paNoError) 
+    if (err != paNoError)
 		oserror();
 
 	// Check to make sure there are audio devices present
@@ -132,7 +132,7 @@ audiodevopen(void)
     /* -- start stream -- */
     err = Pa_StartStream( stream );
 
-    if( err != paNoError ) 
+    if( err != paNoError )
         oserror();
 
 	leftvol = rightvol = (int) denormalize(systemVolume());
@@ -146,13 +146,13 @@ audiodevclose(void)
     /* -- Now we stop the stream -- */
     err = Pa_StopStream( stream );
 
-    if( err != paNoError ) 
+    if( err != paNoError )
         oserror();
 
     /* -- don't forget to cleanup! -- */
     err = Pa_CloseStream( stream );
 
-    if( err != paNoError ) 
+    if( err != paNoError )
         oserror();
 
     err = Pa_Terminate();
@@ -169,7 +169,7 @@ audiodevread(void *v, int n)
 	totalFrames = n/FRAME_SIZE;
 
 	err = Pa_ReadStream( stream, v, totalFrames );
-	    
+
 	if( err != paNoError )
 		oserror();
 
@@ -195,11 +195,11 @@ audiodevwrite(void *v, int n)
 	totalFrames = sizeof(outputBuffer)/FRAME_SIZE;
 
 	err = Pa_WriteStream( stream, outputBuffer, totalFrames );
-	    
+
 	if( err != paNoError )
 		oserror();
 
-	return m + n;	
+	return m + n;
 }
 
 void
@@ -239,11 +239,11 @@ AudioDeviceID obtainDefaultOutputDevice()
     AudioDeviceID theAnswer = kAudioObjectUnknown;
     UInt32 theSize = sizeof(AudioDeviceID);
     AudioObjectPropertyAddress theAddress;
-	
+
 	theAddress.mSelector = kAudioHardwarePropertyDefaultOutputDevice;
 	theAddress.mScope = kAudioObjectPropertyScopeGlobal;
 	theAddress.mElement = kAudioObjectPropertyElementMaster;
-	
+
 	//first be sure that a default device exists
 	if (! AudioObjectHasProperty(kAudioObjectSystemObject, &theAddress) )	{
 		printf("Unable to get default audio device\n");
@@ -259,26 +259,26 @@ AudioDeviceID obtainDefaultOutputDevice()
 }
 
 float systemVolume(void)
-{	
+{
 	AudioDeviceID				defaultDevID = kAudioObjectUnknown;
 	UInt32						theSize = sizeof(Float32);
 	OSStatus					theError;
 	Float32						theVolume = 0;
 	AudioObjectPropertyAddress	theAddress;
-	
+
 	defaultDevID = obtainDefaultOutputDevice();
 	if (defaultDevID == kAudioObjectUnknown) return 0.0;		//device not found: return 0
-	
+
 	theAddress.mSelector = kAudioHardwareServiceDeviceProperty_VirtualMasterVolume;
 	theAddress.mScope = kAudioDevicePropertyScopeOutput;
 	theAddress.mElement = kAudioObjectPropertyElementMaster;
-	
+
 	//be sure that the default device has the volume property
 	if (! AudioObjectHasProperty(defaultDevID, &theAddress) ) {
 		printf("No volume control for device 0x%0x\n",defaultDevID);
 		return 0.0;
 	}
-	
+
 	//now read the property and correct it, if outside [0...1]
 	theError = AudioObjectGetPropertyData(defaultDevID, &theAddress, 0, NULL, &theSize, &theVolume);
 	if ( theError != noErr )	{
@@ -286,7 +286,7 @@ float systemVolume(void)
 		return 0.0;
 	}
 	theVolume = theVolume > 1.0 ? 1.0 : (theVolume < 0.0 ? 0.0 : theVolume);
-	
+
 	return theVolume;
 }
 
@@ -301,22 +301,22 @@ void setSystemVolume(float theVolume)
 	Boolean						muteValue;
 	Boolean						hasMute = 1;
 	Boolean						canMute = 1;
-	
+
 	defaultDevID = obtainDefaultOutputDevice();
 	if (defaultDevID == kAudioObjectUnknown) {			//device not found: return without trying to set
 		printf("Device unknown");
 		return;
 	}
-	
+
 		//check if the new value is in the correct range - normalize it if not
 	newValue = theVolume > 1.0 ? 1.0 : (theVolume < 0.0 ? 0.0 : theVolume);
 	if (newValue != theVolume) {
 		printf("Tentative volume (%5.2f) was out of range; reset to %5.2f", theVolume, newValue);
 	}
-	
+
 	theAddress.mElement = kAudioObjectPropertyElementMaster;
 	theAddress.mScope = kAudioDevicePropertyScopeOutput;
-	
+
 		//set the selector to mute or not by checking if under threshold and check if a mute command is available
 	if ( (muteValue = (newValue < THRESHOLD)) )
 	{
@@ -337,16 +337,16 @@ void setSystemVolume(float theVolume)
 	{
 		theAddress.mSelector = kAudioHardwareServiceDeviceProperty_VirtualMasterVolume;
 	}
-	
+
 // **** now manage the volume following the what we found ****
-	
+
 		//be sure the device has a volume command
 	if (! AudioObjectHasProperty(defaultDevID, &theAddress))
 	{
 		printf("The device 0x%0x does not have a volume to set", defaultDevID);
 		return;
 	}
-	
+
 		//be sure the device can set the volume
 	theError = AudioObjectIsPropertySettable(defaultDevID, &theAddress, &canSetVol);
 	if ( theError!=noErr || !canSetVol )
@@ -354,7 +354,7 @@ void setSystemVolume(float theVolume)
 		printf("The volume of device 0x%0x cannot be set", defaultDevID);
 		return;
 	}
-	
+
 		//if under the threshold then mute it, only if possible - done/exit
 	if (muteValue && hasMute && canMute)
 	{
